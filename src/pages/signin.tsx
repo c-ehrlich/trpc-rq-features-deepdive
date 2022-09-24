@@ -8,13 +8,17 @@ function SignIn(props: {
 
   return (
     <div className="flex min-h-screen w-screen flex-col items-center justify-center gap-4 bg-slate-800">
+<<<<<<< HEAD
       <h1 className="text-center text-4xl text-white">
         Welcome to the custom login page
       </h1>
+=======
+      <h1 className="text-4xl text-white">Welcome to the custom login page</h1>
+>>>>>>> 8218c26 (setup prettier)
       {Object.values(props.providers).map((provider) => (
         <button
           key={provider.id}
-          className="bg-white hover:bg-slate-200 p-2"
+          className="bg-white p-2 hover:bg-slate-200"
           onClick={() => signIn(provider.id)}
         >
           Log in with {provider.name}

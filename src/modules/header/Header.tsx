@@ -13,10 +13,10 @@ function Header() {
       </Link>
       <div>
         {session?.user ? (
-          <div className="flex gap-2 items-center">
+          <div className="flex items-center gap-2">
             <div>Logged in as {session.user.name}</div>
             <button
-              className="p-2 bg-slate-800 text-white"
+              className="bg-slate-800 p-2 text-white"
               onClick={() => signOut()}
             >
               Sign Out
@@ -24,7 +24,7 @@ function Header() {
           </div>
         ) : (
           <button
-            className="p-2 bg-slate-800 text-white"
+            className="bg-slate-800 p-2 text-white"
             onClick={() => signIn()}
           >
             Sign In
