@@ -1,0 +1,16 @@
+# Use root/example as user/password credentials
+version: '3.9'
+
+services:
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: example
+      POSTGRES_PASSWORD: changeme
+      POSTGRES_DB: faketwitter
+    ports:
+      - 5432:5432
+    expose: 
+      - 5432
