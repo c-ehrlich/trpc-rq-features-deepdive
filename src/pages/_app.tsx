@@ -16,8 +16,12 @@ const MyApp: AppType<{ session: Session | null }> = ({
 
   return (
     <SessionProvider session={session}>
-      {showHeader && <Header />}
-      <Component {...pageProps} />
+      <div className="flex min-h-screen w-screen flex-col items-center bg-slate-800">
+        {showHeader && <Header />}
+        <main className="container flex h-full w-screen flex-1 flex-col gap-2 ">
+          <Component {...pageProps} />
+        </main>
+      </div>
     </SessionProvider>
   );
 };
