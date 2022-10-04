@@ -22,4 +22,24 @@ export const postRouter = t.router({
 
       return true;
     }),
+
+  getAll: t.procedure.query(async ({ ctx }) => {
+    const posts = await ctx.prisma.post.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+      include: {
+        author: true,
+      },
+    });
+
+    if (!Array.isArray(posts)) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Error getting posts",
+      });
+    }
+
+    return posts;
+  }),
 });
