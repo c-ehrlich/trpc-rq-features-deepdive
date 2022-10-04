@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import PostList from "../modules/post/PostList";
 import CreatePost from "../modules/post/CreatePost";
 
 const Home: NextPage = () => {
@@ -29,5 +30,10 @@ const Home: NextPage = () => {
 export default Home;
 
 function LoggedInView() {
-  return <CreatePost />;
+  return (
+    <>
+      <CreatePost />
+      <PostList />
+    </>
+  );
 }
