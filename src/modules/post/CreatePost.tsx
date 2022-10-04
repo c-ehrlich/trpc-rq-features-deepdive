@@ -5,6 +5,7 @@ function CreatePost() {
   const [text, setText] = useState("");
 
   const createPostMutation = trpc.post.create.useMutation();
+  const queryClient = trpc.useContext();
 
   function createPost(e: React.FormEvent) {
     e.preventDefault();
@@ -12,8 +13,10 @@ function CreatePost() {
       { text },
       {
         onError: (e) => console.error(e),
+        onSettled: () => queryClient.post.getAll.invalidate(),
       },
     );
+    setText("");
   }
 
   return (
