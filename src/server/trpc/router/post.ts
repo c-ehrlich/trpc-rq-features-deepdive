@@ -1,5 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
+import { constants } from "../../../utils/constants";
 import { authedProcedure, t } from "../trpc";
 
 export const postRouter = t.router({
@@ -23,6 +24,7 @@ export const postRouter = t.router({
       return true;
     }),
 
+  // NOT USING THIS ANYMORE
   getAll: t.procedure.query(async ({ ctx }) => {
     const posts = await ctx.prisma.post.findMany({
       orderBy: {
@@ -42,4 +44,43 @@ export const postRouter = t.router({
 
     return posts;
   }),
+
+  getPaginated: t.procedure
+    .input(
+      z.object({
+        limit: z.number().min(1).max(100).nullish(),
+        cursor: z.string().nullish(), // cursor should be the PK of the table
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const limit = input.limit ?? constants.limit;
+      const { cursor } = input;
+
+      const posts = await ctx.prisma.post.findMany({
+        orderBy: {
+          createdAt: "desc",
+        },
+        include: {
+          author: true,
+        },
+        // get an extra item at the end which we'll pop and use as next cursor
+        take: limit + 1,
+        cursor: cursor ? { id: cursor } : undefined,
+      });
+
+      if (!Array.isArray(posts)) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Error getting posts",
+        });
+      }
+
+      let nextCursor: typeof cursor | undefined = undefined;
+      if (posts.length > limit) {
+        const nextItem = posts.pop();
+        nextCursor = nextItem?.id || "";
+      }
+
+      return { posts, nextCursor };
+    }),
 });
