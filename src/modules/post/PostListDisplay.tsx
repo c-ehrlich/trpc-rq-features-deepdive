@@ -1,6 +1,7 @@
 import Image from "next/future/image";
+import Link from "next/link";
 import { PostGetPaginated } from "../../server/trpc/router/post";
-import defaultAvatar from "./default-avatar.jpeg";
+import defaultAvatar from "../user/default-avatar.jpeg";
 
 // TODO: maybe incorporate this instead
 interface PostListProps {
@@ -25,15 +26,22 @@ export default function PostListDisplay(props: PostListProps) {
 function Post(props: { post: PostListProps["posts"][number] }) {
   return (
     <div className="flex gap-2 bg-slate-900 p-2 text-white">
-      <Image
-        src={props.post.author.image || defaultAvatar}
-        alt={`${props.post.author.name}'s Avatar`}
-        width={64}
-        height={64}
-      />
+      <Link href={`/user/${props.post.authorId}`}>
+        <a>
+          <Image
+            src={props.post.author.image || defaultAvatar}
+            alt={`${props.post.author.name}'s Avatar`}
+            width={64}
+            height={64}
+          />
+        </a>
+      </Link>
       <div className="flex flex-col gap-2">
         <p>
-          {props.post.author.name} at {props.post.createdAt.toLocaleString()}
+          <Link href={`/user/${props.post.authorId}`}>
+            <a>{props.post.author.name}</a>
+          </Link>{" "}
+          at {props.post.createdAt.toLocaleString()}
         </p>
         <p>{props.post.text}</p>
       </div>
