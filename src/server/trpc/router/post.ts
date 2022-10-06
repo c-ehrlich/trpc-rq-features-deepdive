@@ -1,5 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
+import { AppRouterTypes } from ".";
 import { constants } from "../../../utils/constants";
 import { authedProcedure, t } from "../trpc";
 
@@ -31,7 +32,12 @@ export const postRouter = t.router({
         createdAt: "desc",
       },
       include: {
-        author: true,
+        author: {
+          select: {
+            name: true,
+            image: true,
+          },
+        },
       },
     });
 
@@ -61,7 +67,12 @@ export const postRouter = t.router({
           createdAt: "desc",
         },
         include: {
-          author: true,
+          author: {
+            select: {
+              name: true,
+              image: true,
+            },
+          },
         },
         // get an extra item at the end which we'll pop and use as next cursor
         take: limit + 1,
@@ -84,3 +95,5 @@ export const postRouter = t.router({
       return { posts, nextCursor };
     }),
 });
+
+export type PostGetPaginated = AppRouterTypes["post"]["getPaginated"];
