@@ -1,10 +1,15 @@
-import { inferProcedureOutput } from "@trpc/server";
 import Image from "next/future/image";
-import { AppRouter } from "../../server/trpc/router";
+import { PostGetPaginated } from "../../server/trpc/router/post";
 import defaultAvatar from "./default-avatar.jpeg";
 
+// TODO: maybe incorporate this instead
 interface PostListProps {
-  posts: inferProcedureOutput<AppRouter["post"]["getAll"]>;
+  // using inference helpers, see:
+  // https://trpc.io/docs/v10/infer-types#additional-dx-helper-type
+  posts: PostGetPaginated["output"]["posts"];
+
+  // Another way to do this without inference helpers:
+  // posts: inferProcedureOutput<AppRouter["post"]["getPaginated"]>["posts"];
 }
 
 export default function PostListDisplay(props: PostListProps) {
