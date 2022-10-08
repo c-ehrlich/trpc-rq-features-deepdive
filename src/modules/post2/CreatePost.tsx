@@ -18,7 +18,8 @@ function CreatePost() {
       if (posts && session?.user) {
         const date = new Date();
 
-        // (don't actually need this typing, but useful for building the object)
+        // leaving here for tutorial sake but would usually delete the type
+        // after building the object
         const newPost: PostGetPaginated["output"]["posts"][number] = {
           id: JSON.stringify(date),
           text: post.text,
