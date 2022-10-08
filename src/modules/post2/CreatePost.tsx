@@ -54,7 +54,7 @@ function CreatePost() {
   }
 
   return (
-    <form className="flex flex-col gap-2 p-2" onSubmit={createPost}>
+    <form className="flex flex-col gap-2 py-2" onSubmit={createPost}>
       <textarea
         className="p-2"
         rows={3}

@@ -56,6 +56,7 @@ export const postRouter = t.router({
       z.object({
         limit: z.number().min(1).max(100).nullish(),
         cursor: z.string().nullish(), // cursor should be the PK of the table
+        userId: z.string().cuid().optional(),
       }),
     )
     .query(async ({ ctx, input }) => {
@@ -63,6 +64,9 @@ export const postRouter = t.router({
       const { cursor } = input;
 
       const posts = await ctx.prisma.post.findMany({
+        where: {
+          ...(input.userId && { authorId: input.userId }),
+        },
         orderBy: {
           createdAt: "desc",
         },

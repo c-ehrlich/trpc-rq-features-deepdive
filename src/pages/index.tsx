@@ -1,8 +1,8 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import { useSession } from "next-auth/react";
-import PostList from "../modules/post/PostList";
-import CreatePost from "../modules/post/CreatePost";
+import CreatePost from "../modules/post2/CreatePost";
+import PostsInfinite from "../modules/post2/PostsInfinite";
 
 const Home: NextPage = () => {
   const { data: session } = useSession();
@@ -33,7 +33,7 @@ function LoggedInView() {
   return (
     <>
       <CreatePost />
-      <PostList />
+      <PostsInfinite />
     </>
   );
 }
