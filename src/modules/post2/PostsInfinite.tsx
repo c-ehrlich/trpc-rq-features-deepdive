@@ -4,6 +4,8 @@ import defaultAvatar from "../user/default-avatar.jpeg";
 import Image from "next/future/image";
 import Link from "next/link";
 import GetMorePostsButton from "./GetMorePostsButton";
+import ErrorDisplay from "../../components/ErrorDisplay";
+import LoadingDisplay from "../../components/LoadingDisplay";
 
 type PostFetcherProps = {
   userId?: string;
@@ -20,8 +22,9 @@ function PostsInfinite(props: PostFetcherProps) {
     fetchStatus,
   } = useGetPostsPaginated(props);
 
-  if (isLoading) return <div>Loading...</div>;
-  if (isError || !posts) return <div>Error: {JSON.stringify(error)}</div>;
+  if (isLoading) return <LoadingDisplay thing="posts" />;
+
+  if (isError || !posts) return <ErrorDisplay error={JSON.stringify(error)} />;
 
   return (
     <>

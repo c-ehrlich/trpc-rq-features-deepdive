@@ -7,6 +7,7 @@ export const userRouter = t.router({
   findById: t.procedure
     .input(z.object({ userId: z.string().cuid() }))
     .query(async ({ ctx, input }) => {
+      console.log("in findById");
       const user = await ctx.prisma.user.findUnique({
         where: {
           id: input.userId,
@@ -28,7 +29,9 @@ export const userRouter = t.router({
         },
       });
 
-      if (!user) throw new TRPCError({ code: "NOT_FOUND" });
+      if (!user) {
+        throw new TRPCError({ code: "NOT_FOUND" });
+      }
 
       return user;
     }),

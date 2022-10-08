@@ -9,7 +9,7 @@ type GetMostPostsButtonProps = {
 function GetMorePostsButton(props: GetMostPostsButtonProps) {
   return (
     <button
-      className="bg-slate-200 px-3 py-2"
+      className="mb-12 bg-slate-200 px-3 py-2"
       disabled={!props.hasNextPage || props.fetchStatus !== "idle"}
       onClick={() => props.fetchNextPage()}
     >
