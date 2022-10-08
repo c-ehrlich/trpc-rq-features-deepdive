@@ -50,7 +50,7 @@ function UserProfile(props: UserProfileProps) {
   return (
     <>
       <div className="mt-2 flex flex-col gap-2">
-        <div className="flex gap-4 bg-slate-200 p-2">
+        <div className="flex gap-4 bg-slate-900 p-2">
           <Image
             className="h-32 w-32 rounded-xl"
             alt={`${user.name}'s avatar`}
@@ -58,7 +58,7 @@ function UserProfile(props: UserProfileProps) {
             width={128}
             height={128}
           />
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1 text-white">
             <h2 className="text-2xl font-bold">{user.name}</h2>
             <p>Registered {user.createdAt.toLocaleDateString()}</p>
             <p>{user._count.posts} posts</p>
