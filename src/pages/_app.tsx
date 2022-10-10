@@ -6,6 +6,7 @@ import type { AppType } from "next/app";
 import { trpc } from "../utils/trpc";
 import Header from "../modules/header/Header";
 import { useRouter } from "next/router";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -22,6 +23,8 @@ const MyApp: AppType<{ session: Session | null }> = ({
           <Component {...pageProps} />
         </main>
       </div>
+      {/* TODO: only show this in dev */}
+      <ReactQueryDevtools />
     </SessionProvider>
   );
 };
