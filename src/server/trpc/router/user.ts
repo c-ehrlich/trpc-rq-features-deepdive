@@ -1,10 +1,10 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { AppRouterTypes } from ".";
-import { t } from "../trpc";
+import { publicProcedure, router } from "../trpc";
 
-export const userRouter = t.router({
-  findById: t.procedure
+export const userRouter = router({
+  findById: publicProcedure
     .input(z.object({ userId: z.string().cuid() }))
     .query(async ({ ctx, input }) => {
       console.log("in findById");
