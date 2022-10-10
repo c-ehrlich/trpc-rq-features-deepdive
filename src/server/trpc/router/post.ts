@@ -2,10 +2,10 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { AppRouterTypes } from ".";
 import { constants } from "../../../utils/constants";
-import { authedProcedure, t } from "../trpc";
+import { protectedProcedure, publicProcedure, router } from "../trpc";
 
-export const postRouter = t.router({
-  create: authedProcedure
+export const postRouter = router({
+  create: protectedProcedure
     .input(z.object({ text: z.string().min(1).max(140) }))
     .mutation(async ({ input, ctx }) => {
       const post = await ctx.prisma.post.create({
@@ -26,7 +26,7 @@ export const postRouter = t.router({
     }),
 
   // NOT USING THIS ANYMORE
-  getAll: t.procedure.query(async ({ ctx }) => {
+  getAll: publicProcedure.query(async ({ ctx }) => {
     const posts = await ctx.prisma.post.findMany({
       orderBy: {
         createdAt: "desc",
@@ -51,16 +51,14 @@ export const postRouter = t.router({
     return posts;
   }),
 
-  getPaginated: t.procedure
+  getPaginated: publicProcedure
     .input(
       z.object({
-        limit: z.number().min(1).max(100).nullish(),
         cursor: z.string().nullish(), // cursor should be the PK of the table
         userId: z.string().cuid().optional(),
       }),
     )
     .query(async ({ ctx, input }) => {
-      const limit = input.limit ?? constants.limit;
       const { cursor } = input;
 
       const posts = await ctx.prisma.post.findMany({
@@ -77,9 +75,22 @@ export const postRouter = t.router({
               image: true,
             },
           },
+          likedBy: {
+            where: {
+              id: ctx.session?.user?.id ? ctx.session.user.id : "",
+            },
+            select: {
+              id: true,
+            },
+          },
+          _count: {
+            select: {
+              likedBy: true,
+            },
+          },
         },
         // get an extra item at the end which we'll pop and use as next cursor
-        take: limit + 1,
+        take: constants.limit + 1,
         cursor: cursor ? { id: cursor } : undefined,
       });
 
@@ -91,12 +102,47 @@ export const postRouter = t.router({
       }
 
       let nextCursor: typeof cursor | undefined = undefined;
-      if (posts.length > limit) {
+      if (posts.length > constants.limit) {
         const nextItem = posts.pop();
         nextCursor = nextItem?.id || "";
       }
 
       return { posts, nextCursor };
+    }),
+
+  like: protectedProcedure
+    .input(
+      z.object({
+        intent: z.enum(["like", "unlike"]),
+        postId: z.string().cuid(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const likedPost = await ctx.prisma.post.update({
+        where: {
+          id: input.postId,
+        },
+        data: {
+          likedBy: {
+            ...(input.intent === "like" && {
+              connect: {
+                id: ctx.session.user.id,
+              },
+            }),
+            ...(input.intent === "unlike" && {
+              disconnect: {
+                id: ctx.session.user.id,
+              },
+            }),
+          },
+        },
+      });
+
+      if (!likedPost) {
+        throw new TRPCError({ code: "NOT_FOUND" });
+      }
+
+      return true;
     }),
 });
 

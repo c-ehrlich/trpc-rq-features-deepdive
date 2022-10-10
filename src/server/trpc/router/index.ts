@@ -1,11 +1,11 @@
 // src/server/trpc/router/index.ts
 import { GetInferenceHelpers } from "@trpc/server";
-import { t } from "../trpc";
+import { router } from "../trpc";
 import { authRouter } from "./auth";
 import { postRouter } from "./post";
 import { userRouter } from "./user";
 
-export const appRouter = t.router({
+export const appRouter = router({
   auth: authRouter,
   post: postRouter,
   user: userRouter,
