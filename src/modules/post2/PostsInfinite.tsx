@@ -57,7 +57,6 @@ function PostInList(props: {
 }) {
   const { data: session } = useSession();
 
-  // TODO: next up, extract this into a custom hook
   const likePostMutation = useLikePost({ queryKey: props.queryKey });
 
   const isLiked =

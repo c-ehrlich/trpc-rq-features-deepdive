@@ -2,6 +2,14 @@ import { useSession } from "next-auth/react";
 import { trpc } from "../../utils/trpc";
 import { PostFetcherProps } from "./PostsInfinite";
 
+type UseGetPostByIdArgs = {
+  postId: string;
+};
+
+export function useGetPostById({ postId }: UseGetPostByIdArgs) {
+  return trpc.post.getOne.useQuery({ postId });
+}
+
 type UseGetPostsArgs = {
   userId?: string;
 };
