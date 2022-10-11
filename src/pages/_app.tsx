@@ -13,13 +13,13 @@ const MyApp: AppType<{ session: Session | null }> = ({
   pageProps: { session, ...pageProps },
 }) => {
   const router = useRouter();
-  const showHeader = ["/signin"].indexOf(router.pathname) === -1;
+  const fullscreen = ["/signin"].indexOf(router.pathname) !== -1;
 
   return (
     <SessionProvider session={session}>
       <div className="flex min-h-screen w-screen flex-col items-center bg-slate-800">
-        {showHeader && <Header />}
-        <main className="container flex h-full w-screen flex-1 flex-col gap-2 ">
+        {!fullscreen && <Header />}
+        <main className="container flex h-full w-screen flex-1 flex-col gap-2">
           <Component {...pageProps} />
         </main>
       </div>
