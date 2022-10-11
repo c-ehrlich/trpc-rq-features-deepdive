@@ -12,8 +12,6 @@ type UserProfileProps = { userId: string };
 function UserProfile(props: UserProfileProps) {
   const { data: session } = useSession();
 
-  const test = trpc.useContext();
-
   const {
     data: user,
     isLoading,
