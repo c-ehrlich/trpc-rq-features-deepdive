@@ -1,10 +1,10 @@
-import AuthGuard from "../components/AuthGuard";
+import AuthedPage from "../components/AuthedPage";
 
 function LikesPage() {
   return (
-    <AuthGuard>
+    <AuthedPage>
       <div>likes</div>
-    </AuthGuard>
+    </AuthedPage>
   );
 }
 
