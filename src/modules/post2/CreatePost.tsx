@@ -1,9 +1,14 @@
 import { useSession } from "next-auth/react";
 import React, { useState } from "react";
 import { PostGetPaginated } from "../../server/trpc/router/post";
+import { constants } from "../../utils/constants";
 import { trpc } from "../../utils/trpc";
 
-function CreatePost() {
+type CreatePostProps = {
+  userId?: string;
+};
+
+function CreatePost(props: CreatePostProps) {
   const [text, setText] = useState("");
   const queryClient = trpc.useContext();
   const { data: session } = useSession();
@@ -14,25 +19,28 @@ function CreatePost() {
     onMutate: (post) => {
       queryClient.post.getPaginated.cancel();
 
-      const posts = queryClient.post.getPaginated.getInfiniteData();
-      if (posts && session?.user) {
-        const date = new Date();
+      queryClient.post.getPaginated.setInfiniteData(
+        (data) => {
+          const date = new Date();
 
-        // leaving here for tutorial sake but would usually delete the type
-        // after building the object
-        const newPost: PostGetPaginated["output"]["posts"][number] = {
-          id: JSON.stringify(date),
-          text: post.text,
-          createdAt: date,
-          updatedAt: date,
-          authorId: session.user.id,
-          author: {
-            name: session.user.name || "unknown username",
-            image: session.user.image || "",
-          },
-        };
+          // leaving here for tutorial sake but would usually delete the type
+          // after building the object
+          const newPost: PostGetPaginated["output"]["posts"][number] = {
+            id: JSON.stringify(date),
+            text: post.text,
+            createdAt: date,
+            updatedAt: date,
+            authorId: session?.user?.id || "",
+            likedBy: [],
+            author: {
+              name: session?.user?.name || "unknown username",
+              image: session?.user?.image || "",
+            },
+            _count: {
+              likedBy: 0,
+            },
+          };
 
-        queryClient.post.getPaginated.setInfiniteData((data) => {
           if (!data) {
             return {
               pages: [],
@@ -43,8 +51,11 @@ function CreatePost() {
           if (data.pages[0]) {
             data.pages[0].posts.unshift(newPost);
           }
-        });
-      }
+
+          return data;
+        },
+        { userId: props.userId },
+      );
     },
   });
 

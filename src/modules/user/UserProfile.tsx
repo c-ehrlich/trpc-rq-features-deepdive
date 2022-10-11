@@ -12,6 +12,8 @@ type UserProfileProps = { userId: string };
 function UserProfile(props: UserProfileProps) {
   const { data: session } = useSession();
 
+  const test = trpc.useContext();
+
   const {
     data: user,
     isLoading,
@@ -68,7 +70,9 @@ function UserProfile(props: UserProfileProps) {
           </div>
         </div>
       </div>
-      {props.userId === session?.user?.id && <CreatePost />}
+      {props.userId === session?.user?.id && (
+        <CreatePost userId={props.userId} />
+      )}
       <PostsInfinite userId={props.userId} />
     </>
   );

@@ -1,4 +1,3 @@
-import { constants } from "../../utils/constants";
 import { trpc } from "../../utils/trpc";
 
 type UseGetPostsArgs = {
@@ -8,7 +7,6 @@ type UseGetPostsArgs = {
 export function useGetPostsPaginated(args: UseGetPostsArgs) {
   return trpc.post.getPaginated.useInfiniteQuery(
     {
-      limit: constants.limit,
       ...(args.userId && { userId: args.userId }),
     },
     {
