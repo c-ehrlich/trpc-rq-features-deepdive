@@ -7,7 +7,7 @@ function SignIn(props: {
   if (!props.providers) return <div>No auth providers found</div>;
 
   return (
-    <div className="flex min-h-screen w-screen flex-col items-center justify-center gap-4 bg-slate-800">
+    <div className="flex min-h-screen w-full flex-col items-center justify-center gap-4 bg-slate-800">
       <h1 className="text-center text-4xl text-white">
         Welcome to the custom login page
       </h1>

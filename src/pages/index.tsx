@@ -1,12 +1,9 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import { useSession } from "next-auth/react";
 import CreatePost from "../modules/post2/CreatePost";
 import PostsInfinite from "../modules/post2/PostsInfinite";
 
 const Home: NextPage = () => {
-  const { data: session } = useSession();
-
   return (
     <>
       <Head>
@@ -14,26 +11,12 @@ const Home: NextPage = () => {
         <meta name="description" content="Make posts" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {session?.user?.id ? (
-        <LoggedInView />
-      ) : (
-        <div className="flex h-full w-screen flex-1 flex-col items-center justify-center">
-          <h1 className="text-xl text-white">
-            Please sign in to start using Fake Twitter
-          </h1>
-        </div>
-      )}
+      <>
+        <CreatePost />
+        <PostsInfinite />
+      </>
     </>
   );
 };
 
 export default Home;
-
-function LoggedInView() {
-  return (
-    <>
-      <CreatePost />
-      <PostsInfinite />
-    </>
-  );
-}

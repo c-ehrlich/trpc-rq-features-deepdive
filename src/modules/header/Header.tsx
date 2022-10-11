@@ -11,6 +11,11 @@ function Header() {
           <h1 className="text-2xl text-black">Fake Twitter</h1>
         </a>
       </Link>
+      {session?.user && (
+        <Link href="/likes">
+          <a>Likes</a>
+        </Link>
+      )}
       <div>
         {session?.user ? (
           <div className="flex items-center gap-2">
