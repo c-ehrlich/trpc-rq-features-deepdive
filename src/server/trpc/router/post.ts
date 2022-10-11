@@ -58,6 +58,27 @@ export const postRouter = router({
         where: {
           id: input.postId,
         },
+        include: {
+          author: {
+            select: {
+              name: true,
+              image: true,
+            },
+          },
+          likedBy: {
+            where: {
+              id: ctx.session?.user?.id ? ctx.session.user.id : "",
+            },
+            select: {
+              id: true,
+            },
+          },
+          _count: {
+            select: {
+              likedBy: true,
+            },
+          },
+        },
       });
 
       if (!post) {
