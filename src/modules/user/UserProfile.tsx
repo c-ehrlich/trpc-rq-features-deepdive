@@ -71,7 +71,7 @@ function UserProfile(props: UserProfileProps) {
       {props.userId === session?.user?.id && (
         <CreatePost userId={props.userId} />
       )}
-      <PostsInfinite userId={props.userId} />
+      <PostsInfinite type="user" queryKey={{ userId: props.userId }} />
     </>
   );
 }

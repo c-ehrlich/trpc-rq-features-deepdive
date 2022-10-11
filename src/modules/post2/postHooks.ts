@@ -1,6 +1,6 @@
 import { useSession } from "next-auth/react";
 import { trpc } from "../../utils/trpc";
-import { PostFetcherProps } from "./PostsInfinite";
+import { PostListProps } from "./PostsInfinite";
 
 type UseGetPostByIdArgs = {
   postId: string;
@@ -10,26 +10,52 @@ export function useGetPostById({ postId }: UseGetPostByIdArgs) {
   return trpc.post.getOne.useQuery({ postId });
 }
 
-type UseGetPostsArgs = {
-  userId?: string;
-};
-
-export function useGetPostsPaginated(args: UseGetPostsArgs) {
-  return trpc.post.getPaginated.useInfiniteQuery(
-    {
-      ...(args.userId && { userId: args.userId }),
-    },
-    {
-      getNextPageParam: (lastPage) => lastPage.nextCursor,
-    },
-  );
+export function useGetPostsPaginated(args: PostListProps) {
+  return trpc.post.getPaginated.useInfiniteQuery(args.queryKey, {
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
+  });
 }
 
-type UseLikePostArgs = {
-  queryKey: PostFetcherProps;
+type UseLikePostSingleArgs = {
+  postId: string;
 };
 
-export function useLikePost({ queryKey }: UseLikePostArgs) {
+export function useLikePostSingle(args: UseLikePostSingleArgs) {
+  const queryClient = trpc.useContext();
+  const { data: session } = useSession();
+
+  return trpc.post.like.useMutation({
+    onError: (err) => console.error(err),
+    onMutate: async (likedPost) => {
+      await queryClient.post.getOne.cancel();
+      queryClient.post.getOne.setData((oldData) => {
+        console.log(oldData);
+        if (!oldData) return;
+        if (likedPost.intent === "like") {
+          return {
+            ...oldData,
+            _count: {
+              likedBy: oldData._count.likedBy + 1,
+            },
+            likedBy: [{ id: session?.user?.id || "" }],
+          };
+        } else {
+          return {
+            ...oldData,
+            _count: {
+              likedBy: oldData._count.likedBy - 1,
+            },
+            likedBy: [],
+          };
+        }
+      }, args);
+    },
+    onSettled: () =>
+      queryClient.post.getOne.invalidate({ postId: args.postId }),
+  });
+}
+
+export function useLikePostPaginated(args: PostListProps) {
   const queryClient = trpc.useContext();
   const { data: session } = useSession();
 
@@ -37,16 +63,16 @@ export function useLikePost({ queryKey }: UseLikePostArgs) {
     onError: (err) => console.error(err),
     onMutate: async (likedPost) => {
       await queryClient.post.getPaginated.cancel();
-      queryClient.post.getPaginated.setInfiniteData((data) => {
-        if (!data) {
+      queryClient.post.getPaginated.setInfiniteData((oldData) => {
+        if (!oldData) {
           return {
             pages: [],
             pageParams: [],
           };
         }
         return {
-          ...data,
-          pages: data.pages.map((page) => ({
+          ...oldData,
+          pages: oldData.pages.map((page) => ({
             ...page,
             posts: page.posts.map((post) =>
               post.id === likedPost.postId
@@ -60,17 +86,18 @@ export function useLikePost({ queryKey }: UseLikePostArgs) {
                     },
                     likedBy:
                       likedPost.intent === "like"
-                        ? // DONT PUT THE "" FIRST AND "DEBUG" IT
-                          [{ id: session?.user?.id || "" }]
+                        ? [{ id: session?.user?.id || "" }]
                         : [],
                   }
                 : post,
             ),
           })),
         };
-      }, queryKey);
+      }, args.queryKey);
     },
 
-    onSettled: () => queryClient.post.getPaginated.invalidate(),
+    onSettled: () => {
+      queryClient.post.getPaginated.invalidate();
+    },
   });
 }

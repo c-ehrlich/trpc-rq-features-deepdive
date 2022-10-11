@@ -1,5 +1,5 @@
 import { PostGetPaginated } from "../../server/trpc/router/post";
-import { useGetPostsPaginated, useLikePost } from "./postHooks";
+import { useGetPostsPaginated, useLikePostPaginated } from "./postHooks";
 import defaultAvatar from "../user/default-avatar.jpeg";
 import Image from "next/future/image";
 import Link from "next/link";
@@ -8,13 +8,18 @@ import ErrorDisplay from "../../components/ErrorDisplay";
 import LoadingDisplay from "../../components/LoadingDisplay";
 import { useSession } from "next-auth/react";
 import { clsx } from "clsx";
-import { trpc } from "../../utils/trpc";
 
-export type PostFetcherProps = {
-  userId?: string;
-};
+export type PostListProps =
+  | {
+      type: "timeline";
+      queryKey: Record<string, never>;
+    }
+  | {
+      type: "user";
+      queryKey: { userId: string };
+    };
 
-function PostsInfinite(props: PostFetcherProps) {
+function PostsInfinite(props: PostListProps) {
   const {
     data: posts,
     isLoading,
@@ -53,11 +58,11 @@ export default PostsInfinite;
 
 function PostInList(props: {
   post: PostGetPaginated["output"]["posts"][number];
-  queryKey: PostFetcherProps;
+  queryKey: PostListProps;
 }) {
   const { data: session } = useSession();
 
-  const likePostMutation = useLikePost({ queryKey: props.queryKey });
+  const likePostMutation = useLikePostPaginated(props.queryKey);
 
   const isLiked =
     session?.user?.id && session?.user?.id === props.post.likedBy[0]?.id;
