@@ -1,5 +1,5 @@
 import { PostGetPaginated } from "../../server/trpc/router/post";
-import { useGetPostsPaginated } from "./postHooks";
+import { useGetPostsPaginated, useLikePost } from "./postHooks";
 import defaultAvatar from "../user/default-avatar.jpeg";
 import Image from "next/future/image";
 import Link from "next/link";
@@ -10,7 +10,7 @@ import { useSession } from "next-auth/react";
 import { clsx } from "clsx";
 import { trpc } from "../../utils/trpc";
 
-type PostFetcherProps = {
+export type PostFetcherProps = {
   userId?: string;
 };
 
@@ -56,49 +56,9 @@ function PostInList(props: {
   queryKey: PostFetcherProps;
 }) {
   const { data: session } = useSession();
-  const queryClient = trpc.useContext();
 
-  const likePostMutation = trpc.post.like.useMutation({
-    onError: (err) => console.error(err),
-    onMutate: async (likedPost) => {
-      await queryClient.post.getPaginated.cancel();
-      queryClient.post.getPaginated.setInfiniteData((data) => {
-        if (!data) {
-          return {
-            pages: [],
-            pageParams: [],
-          };
-        }
-        const thingToReturn = {
-          ...data,
-          pages: data.pages.map((page) => ({
-            ...page,
-            posts: page.posts.map((post) =>
-              post.id === likedPost.postId
-                ? {
-                    ...post,
-                    _count: {
-                      likedBy:
-                        likedPost.intent === "like"
-                          ? post._count.likedBy + 1
-                          : post._count.likedBy - 1,
-                    },
-                    likedBy:
-                      likedPost.intent === "like"
-                        ? // DONT PUT THE "" FIRST AND "DEBUG" IT
-                          [{ id: session?.user?.id || "" }]
-                        : [],
-                  }
-                : post,
-            ),
-          })),
-        };
-        return thingToReturn;
-      }, props.queryKey);
-    },
-
-    onSettled: () => queryClient.post.getPaginated.invalidate(),
-  });
+  // TODO: next up, extract this into a custom hook
+  const likePostMutation = useLikePost({ queryKey: props.queryKey });
 
   const isLiked =
     session?.user?.id && session?.user?.id === props.post.likedBy[0]?.id;
