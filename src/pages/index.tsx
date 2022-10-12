@@ -13,7 +13,7 @@ const Home: NextPage = () => {
       </Head>
       <>
         <CreatePost />
-        <PostsInfinite />
+        <PostsInfinite type="timeline" queryKey={{}} />
       </>
     </>
   );

@@ -1,7 +1,6 @@
 import { useSession } from "next-auth/react";
 import React, { useState } from "react";
 import { PostGetPaginated } from "../../server/trpc/router/post";
-import { constants } from "../../utils/constants";
 import { trpc } from "../../utils/trpc";
 
 type CreatePostProps = {
