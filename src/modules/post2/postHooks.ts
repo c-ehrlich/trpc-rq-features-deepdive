@@ -92,6 +92,7 @@ export function useLikePostPaginated(args: PostListProps) {
             ),
           })),
         };
+        // TODO: create a post in ts-wizards discord about a better way to implement this
       }, args.queryKey);
     },
 
