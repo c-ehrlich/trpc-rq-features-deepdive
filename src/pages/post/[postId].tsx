@@ -12,6 +12,8 @@ import Image from "next/future/image";
 import { useSession } from "next-auth/react";
 import defaultAvatar from "../../modules/user/default-avatar.jpeg";
 import clsx from "clsx";
+import { unstable_getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]";
 
 export default function PostPage(
   props: InferGetServerSidePropsType<typeof getServerSideProps>,
@@ -33,7 +35,6 @@ export default function PostPage(
   }
 
   if (isLoading) {
-    console.log("loading");
     return <div className="text-white">Loading...</div>;
   }
 
@@ -87,22 +88,27 @@ export default function PostPage(
 export async function getServerSideProps(
   context: GetServerSidePropsContext<{ postId: string }>,
 ) {
+  const session = await unstable_getServerSession(
+    context.req,
+    context.res,
+    authOptions,
+  );
+
   const ssgHelper = createProxySSGHelpers({
     router: appRouter,
-    ctx: await createContextInner({ session: null }),
+    ctx: await createContextInner({ session }),
     transformer: superjson,
   });
 
   const postId = context.params?.postId as string; // mention that this _works_ but feels like lying
 
-  const post = await ssgHelper.post.getOne.fetch({ postId });
-
-  console.log(post);
+  await ssgHelper.post.getOne.prefetch({ postId });
 
   return {
     props: {
       trpcState: ssgHelper.dehydrate(),
       postId,
+      session,
     },
   };
 }
