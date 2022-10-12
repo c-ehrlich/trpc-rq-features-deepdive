@@ -75,10 +75,11 @@ function PostInList(props: {
   }
 
   return (
-    <div className="flex gap-2 bg-slate-900 p-2 text-white">
+    <div className="flex gap-2 bg-slate-900 p-4 text-white">
       <Link href={`/user/${props.post.authorId}`}>
         <a>
           <Image
+            className="rounded-full"
             src={props.post.author.image || defaultAvatar}
             alt={`${props.post.author.name}'s Avatar`}
             width={64}
