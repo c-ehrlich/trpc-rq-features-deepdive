@@ -29,7 +29,6 @@ export function useLikePostSingle(args: UseLikePostSingleArgs) {
     onMutate: async (likedPost) => {
       await queryClient.post.getOne.cancel();
       queryClient.post.getOne.setData((oldData) => {
-        console.log(oldData);
         if (!oldData) return;
         if (likedPost.intent === "like") {
           return {
