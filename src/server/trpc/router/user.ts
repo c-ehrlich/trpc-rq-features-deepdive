@@ -1,6 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { AppRouterTypes } from ".";
+import { AppRouterTypes } from "./_app";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
 
 export const userRouter = router({
