@@ -8,6 +8,7 @@ import ErrorDisplay from "../../components/ErrorDisplay";
 import LoadingDisplay from "../../components/LoadingDisplay";
 import { useSession } from "next-auth/react";
 import { clsx } from "clsx";
+import { ReactNode } from "react";
 
 export type PostListProps =
   | {
@@ -17,6 +18,10 @@ export type PostListProps =
   | {
       type: "user";
       queryKey: { userId: string };
+    }
+  | {
+      type: "search";
+      queryKey: { text: string };
     };
 
 function PostsInfinite(props: PostListProps) {
@@ -30,21 +35,25 @@ function PostsInfinite(props: PostListProps) {
     fetchStatus,
   } = useGetPostsPaginated(props);
 
-  if (isLoading) return <LoadingDisplay thing="posts" />;
+  if (isLoading) {
+    return <LoadingDisplay thing="posts" />;
+  }
 
-  if (isError || !posts) return <ErrorDisplay error={JSON.stringify(error)} />;
+  if (isError) {
+    return <ErrorDisplay error={JSON.stringify(error)} />;
+  }
 
   return (
     <>
-      <div className="flex flex-col gap-2">
-        {posts.pages.map((page, index) => (
-          <div key={`page-${index}`} className="flex flex-col gap-2">
+      <PostsInfiniteListUI>
+        {posts?.pages.map((page, index) => (
+          <PostInifiniteListGroup key={`page-${index}`}>
             {page.posts.map((post) => (
-              <PostInList key={post.id} post={post} queryKey={props} />
+              <PostInList key={post.id} post={post} queryOptions={props} />
             ))}
-          </div>
+          </PostInifiniteListGroup>
         ))}
-      </div>
+      </PostsInfiniteListUI>
       <GetMorePostsButton
         hasNextPage={hasNextPage || false}
         fetchNextPage={fetchNextPage}
@@ -56,13 +65,21 @@ function PostsInfinite(props: PostListProps) {
 
 export default PostsInfinite;
 
-function PostInList(props: {
+export function PostsInfiniteListUI(props: { children: ReactNode }) {
+  return <div className="flex flex-col gap-2">{props.children}</div>;
+}
+
+export function PostInifiniteListGroup(props: { children: ReactNode }) {
+  return <div className="flex flex-col gap-2">{props.children}</div>;
+}
+
+export function PostInList(props: {
   post: PostGetPaginated["output"]["posts"][number];
-  queryKey: PostListProps;
+  queryOptions: PostListProps;
 }) {
   const { data: session } = useSession();
 
-  const likePostMutation = useLikePostPaginated(props.queryKey);
+  const likePostMutation = useLikePostPaginated(props.queryOptions);
 
   const isLiked =
     session?.user?.id && session?.user?.id === props.post.likedBy[0]?.id;

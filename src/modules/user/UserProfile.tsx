@@ -2,7 +2,6 @@ import { useSession } from "next-auth/react";
 import Image from "next/future/image";
 import ErrorDisplay from "../../components/ErrorDisplay";
 import LoadingDisplay from "../../components/LoadingDisplay";
-import { trpc } from "../../utils/trpc";
 import CreatePost from "../post2/CreatePost";
 import PostsInfinite from "../post2/PostsInfinite";
 import defaultAvatar from "./default-avatar.jpeg";

@@ -12,9 +12,14 @@ function Header() {
         </a>
       </Link>
       {session?.user && (
-        <Link href="/likes">
-          <a>Likes</a>
-        </Link>
+        <>
+          <Link href="/likes">
+            <a>Likes</a>
+          </Link>
+          <Link href="/search">
+            <a>Search</a>
+          </Link>
+        </>
       )}
       <div>
         {session?.user ? (
