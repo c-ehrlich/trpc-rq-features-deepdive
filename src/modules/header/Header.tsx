@@ -5,10 +5,10 @@ function Header() {
   const { data: session } = useSession();
 
   return (
-    <div className="sticky top-0 flex w-screen items-center justify-between border-b-2 bg-slate-100 p-4">
+    <div className="sticky top-0 mb-4 flex w-screen items-center justify-between border-b-2 border-b-slate-500 bg-slate-900 p-4 text-white">
       <Link href="/">
         <a>
-          <h1 className="text-2xl text-black">Fake Twitter</h1>
+          <h1 className="text-2xl text-white">Fake Twitter</h1>
         </a>
       </Link>
       {session?.user && (
@@ -23,20 +23,14 @@ function Header() {
       )}
       <div>
         {session?.user ? (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
             <div>Logged in as {session.user.name}</div>
-            <button
-              className="bg-slate-800 p-2 text-white"
-              onClick={() => signOut()}
-            >
+            <button className="bg-slate-700 p-2" onClick={() => signOut()}>
               Sign Out
             </button>
           </div>
         ) : (
-          <button
-            className="bg-slate-800 p-2 text-white"
-            onClick={() => signIn()}
-          >
+          <button className="bg-slate-700 p-2" onClick={() => signIn()}>
             Sign In
           </button>
         )}

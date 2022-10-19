@@ -19,13 +19,13 @@ function CreatePost(props: CreatePostProps) {
   return (
     <form className="flex gap-4 py-2" onSubmit={createPost}>
       <input
-        className="flex-1 rounded-md p-2"
+        className="flex-1 rounded-md bg-slate-400 p-2 placeholder-black/40"
         value={text}
         onChange={(e) => setText(e.target.value)}
         placeholder="What's happening?"
       />
       <div className="flex justify-end">
-        <button className="rounded-full bg-slate-50 px-5 py-2 text-xl hover:bg-slate-100">
+        <button className="rounded-full border border-slate-700 bg-blue-500 px-8 py-3 text-xl text-white hover:bg-slate-900/70">
           Submit
         </button>
       </div>

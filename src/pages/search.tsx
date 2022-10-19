@@ -87,11 +87,6 @@ function Search() {
               Search for &quot;{text}&quot; did not return anything
             </div>
           )}
-          {haventSearched && (
-            <div className="text-center text-xl text-white">
-              Please search for something
-            </div>
-          )}
         </PostsInfiniteListUI>
         {showGetMorePostsButton && (
           <GetMorePostsButton
@@ -113,13 +108,14 @@ interface SearchInputProps {
 
 function SearchInput(props: SearchInputProps) {
   return (
-    <form onSubmit={props.handleSearch} className="mt-2 flex gap-2">
+    <form onSubmit={props.handleSearch} className="flex gap-4 py-2">
       <input
-        className=" flex-1 border border-black px-3 py-2"
+        className="flex-1 rounded-md bg-slate-400 p-2 placeholder-black/40"
         value={props.text}
         onChange={(e) => props.setText(e.target.value)}
+        placeholder="Please search for something"
       />
-      <button className="bg-slate-50 px-3 py-2 hover:bg-slate-200">
+      <button className="rounded-full border border-slate-700 bg-blue-500 px-8 py-3 text-xl text-white hover:bg-slate-900/70">
         Search
       </button>
     </form>
