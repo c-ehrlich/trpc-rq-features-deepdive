@@ -13,49 +13,46 @@ function CreatePost(props: CreatePostProps) {
   const { data: session } = useSession();
 
   const createPostMutation = trpc.post.create.useMutation({
-    onError: (e) => console.error(e),
-    onSettled: () => queryClient.post.getPaginated.invalidate(),
     onMutate: (post) => {
       queryClient.post.getPaginated.cancel();
+      const oldData = queryClient.post.getPaginated.getInfiniteData({
+        userId: props.userId,
+      });
+      if (oldData) {
+        const date = new Date();
+        // leaving here for tutorial sake but would usually delete the type
+        // after building the object
+        const newPost: PostGetPaginated["output"]["posts"][number] = {
+          id: JSON.stringify(date),
+          text: post.text,
+          createdAt: date,
+          updatedAt: date,
+          authorId: session?.user?.id || "",
+          likedBy: [],
+          author: {
+            name: session?.user?.name || "unknown username",
+            image: session?.user?.image || "",
+          },
+          _count: {
+            likedBy: 0,
+          },
+        };
 
-      queryClient.post.getPaginated.setInfiniteData(
-        (data) => {
-          const date = new Date();
+        if (oldData.pages[0]) {
+          oldData.pages[0].posts.unshift(newPost);
+        }
 
-          // leaving here for tutorial sake but would usually delete the type
-          // after building the object
-          const newPost: PostGetPaginated["output"]["posts"][number] = {
-            id: JSON.stringify(date),
-            text: post.text,
-            createdAt: date,
-            updatedAt: date,
-            authorId: session?.user?.id || "",
-            likedBy: [],
-            author: {
-              name: session?.user?.name || "unknown username",
-              image: session?.user?.image || "",
-            },
-            _count: {
-              likedBy: 0,
-            },
-          };
-
-          if (!data) {
-            return {
-              pages: [],
-              pageParams: [],
-            };
-          }
-
-          if (data.pages[0]) {
-            data.pages[0].posts.unshift(newPost);
-          }
-
-          return data;
-        },
-        { userId: props.userId },
-      );
+        queryClient.post.getPaginated.setInfiniteData(oldData, {
+          userId: props.userId,
+        });
+      }
+      return oldData;
     },
+    onError: (e, _input, oldData) => {
+      queryClient.post.getPaginated.setInfiniteData(oldData);
+      console.error(e);
+    },
+    onSettled: () => queryClient.post.getPaginated.invalidate(),
   });
 
   function createPost(e: React.FormEvent) {
