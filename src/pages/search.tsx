@@ -3,7 +3,7 @@ import AuthedPage from "../components/AuthedPage";
 import ErrorDisplay from "../components/ErrorDisplay";
 import LoadingDisplay from "../components/LoadingDisplay";
 import GetMorePostsButton from "../modules/post2/GetMorePostsButton";
-import { useGetPostsPaginated } from "../modules/post2/postHooks";
+import useGetPostsPaginated from "../modules/post2/hooks/useGetPostsPaginated";
 import {
   PostInifiniteListGroup,
   PostInList,
@@ -20,6 +20,11 @@ function SearchPage() {
 }
 
 export default SearchPage;
+
+// TODO: next, refactor this shit AGAIN
+// EITHER figure out of there is a way to pass JUST a queryKey
+// OR accept that search is different from other list things, and figure out
+//    a good pattern for what is shared between search and other infinite queries
 
 function Search() {
   const [text, setText] = useState("");
@@ -60,6 +65,7 @@ function Search() {
         error={JSON.stringify(error)}
       >
         <PostsInfiniteListUI>
+          {/* TODO: next, make a ui thing for when a search returns 0 results */}
           {data?.pages.map((page, index) => (
             <PostInifiniteListGroup key={`page-${index}`}>
               {page.posts.map((post) => (

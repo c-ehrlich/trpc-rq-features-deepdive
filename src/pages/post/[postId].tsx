@@ -3,10 +3,6 @@ import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { createProxySSGHelpers } from "@trpc/react/ssg";
 import { createContextInner } from "../../server/trpc/context";
 import { appRouter } from "../../server/trpc/router/_app";
-import {
-  useGetPostById,
-  useLikePostSingle,
-} from "../../modules/post2/postHooks";
 import Link from "next/link";
 import Image from "next/future/image";
 import { useSession } from "next-auth/react";
@@ -14,6 +10,8 @@ import defaultAvatar from "../../modules/user/default-avatar.jpeg";
 import clsx from "clsx";
 import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]";
+import useGetPostById from "../../modules/post2/hooks/useGetPostById";
+import useLikePostSingle from "../../modules/post2/hooks/useLikePostSingle";
 
 export default function PostPage(
   props: InferGetServerSidePropsType<typeof getServerSideProps>,

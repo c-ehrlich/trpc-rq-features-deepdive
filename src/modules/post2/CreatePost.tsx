@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { useCreatePost } from "./postHooks";
+import useCreatePost from "./hooks/useCreatePost";
 
 type CreatePostProps = {
-  userId: string;
+  userId?: string; // for queryKey of useCreatePost
 };
 
 function CreatePost(props: CreatePostProps) {

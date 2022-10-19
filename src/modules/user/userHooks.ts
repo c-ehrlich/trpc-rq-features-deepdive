@@ -23,12 +23,12 @@ export function useFindUserById({ userId }: FindUserArgs) {
 }
 
 export function useFollowUser() {
-  const queryClient = trpc.useContext();
+  const utils = trpc.useContext();
 
   return trpc.user.follow.useMutation({
     onError: (err) => console.error(err),
     onSuccess: (_, user) => {
-      queryClient.user.findById.invalidate({ userId: user.userId });
+      utils.user.findById.invalidate({ userId: user.userId });
     },
   });
 }

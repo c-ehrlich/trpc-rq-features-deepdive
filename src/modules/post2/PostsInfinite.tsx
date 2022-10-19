@@ -1,5 +1,6 @@
 import { PostGetPaginated } from "../../server/trpc/router/post";
-import { useGetPostsPaginated, useLikePostPaginated } from "./postHooks";
+import useGetPostsPaginated from "./hooks/useGetPostsPaginated";
+import useLikePostPaginated from "./hooks/useLikePostPaginated";
 import defaultAvatar from "../user/default-avatar.jpeg";
 import Image from "next/future/image";
 import Link from "next/link";
