@@ -29,7 +29,10 @@ export default SearchPage;
 function Search() {
   const [text, setText] = useState("");
 
-  const queryOptions: PostListProps = { type: "search", queryKey: { text } };
+  const queryOptions: PostListProps = {
+    type: "search",
+    queryKey: { text },
+  };
 
   const {
     data,
@@ -51,19 +54,11 @@ function Search() {
     data?.pages[0]?.posts && data.pages[0].posts.length > 1;
   const nothingFound =
     data?.pages[0]?.posts && data.pages[0].posts.length === 0 && !isFetching;
+  const haventSearched = !data && !isFetching && !isError;
 
   return (
     <>
-      <form onSubmit={handleSearch} className="mt-2 flex gap-2">
-        <input
-          className=" flex-1 border border-black px-3 py-2"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-        />
-        <button className="bg-slate-50 px-3 py-2 hover:bg-slate-200">
-          Search
-        </button>
-      </form>
+      <SearchInput text={text} setText={setText} handleSearch={handleSearch} />
       <LoadingAndErrorWrapper
         isFetching={isFetching}
         isError={isError}
@@ -86,6 +81,11 @@ function Search() {
               Search for &quot;{text}&quot; did not return anything
             </div>
           )}
+          {haventSearched && (
+            <div className="text-center text-xl text-white">
+              Please search for something
+            </div>
+          )}
         </PostsInfiniteListUI>
         {showGetMorePostsButton && (
           <GetMorePostsButton
@@ -96,6 +96,27 @@ function Search() {
         )}
       </LoadingAndErrorWrapper>
     </>
+  );
+}
+
+interface SearchInputProps {
+  text: string;
+  handleSearch: (e: React.FormEvent) => void;
+  setText: (text: string) => void;
+}
+
+function SearchInput(props: SearchInputProps) {
+  return (
+    <form onSubmit={props.handleSearch} className="mt-2 flex gap-2">
+      <input
+        className=" flex-1 border border-black px-3 py-2"
+        value={props.text}
+        onChange={(e) => props.setText(e.target.value)}
+      />
+      <button className="bg-slate-50 px-3 py-2 hover:bg-slate-200">
+        Search
+      </button>
+    </form>
   );
 }
 
