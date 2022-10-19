@@ -23,6 +23,10 @@ export type PostListProps =
   | {
       type: "search";
       queryKey: { text: string };
+    }
+  | {
+      type: "likes";
+      queryKey: { likedByUserId: string };
     };
 
 function PostsInfinite(props: PostListProps) {

@@ -94,6 +94,7 @@ export const postRouter = router({
         cursor: z.string().nullish(), // cursor should be the PK of the table
         userId: z.string().cuid().optional(),
         text: z.string().optional(),
+        likedByUserId: z.string().optional(),
       }),
     )
     .query(async ({ ctx, input }) => {
@@ -105,6 +106,13 @@ export const postRouter = router({
           ...(input.text && {
             text: {
               contains: input.text,
+            },
+          }),
+          ...(input.likedByUserId && {
+            likedBy: {
+              some: {
+                id: input.likedByUserId,
+              },
             },
           }),
         },
