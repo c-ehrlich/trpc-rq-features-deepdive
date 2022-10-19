@@ -47,6 +47,11 @@ function Search() {
     refetch();
   }
 
+  const showGetMorePostsButton =
+    data?.pages[0]?.posts && data.pages[0].posts.length > 1;
+  const nothingFound =
+    data?.pages[0]?.posts && data.pages[0].posts.length === 0 && !isFetching;
+
   return (
     <>
       <form onSubmit={handleSearch} className="mt-2 flex gap-2">
@@ -65,7 +70,6 @@ function Search() {
         error={JSON.stringify(error)}
       >
         <PostsInfiniteListUI>
-          {/* TODO: next, make a ui thing for when a search returns 0 results */}
           {data?.pages.map((page, index) => (
             <PostInifiniteListGroup key={`page-${index}`}>
               {page.posts.map((post) => (
@@ -77,12 +81,19 @@ function Search() {
               ))}
             </PostInifiniteListGroup>
           ))}
+          {nothingFound && (
+            <div className="text-center text-xl text-white">
+              Search for &quot;{text}&quot; did not return anything
+            </div>
+          )}
         </PostsInfiniteListUI>
-        <GetMorePostsButton
-          hasNextPage={hasNextPage || false}
-          fetchNextPage={fetchNextPage}
-          fetchStatus={fetchStatus}
-        />
+        {showGetMorePostsButton && (
+          <GetMorePostsButton
+            hasNextPage={hasNextPage || false}
+            fetchNextPage={fetchNextPage}
+            fetchStatus={fetchStatus}
+          />
+        )}
       </LoadingAndErrorWrapper>
     </>
   );
