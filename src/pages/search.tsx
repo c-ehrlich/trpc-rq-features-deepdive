@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import AuthedPage from "../components/AuthedPage";
 import ErrorDisplay from "../components/ErrorDisplay";
 import LoadingDisplay from "../components/LoadingDisplay";
@@ -21,12 +21,8 @@ function SearchPage() {
 
 export default SearchPage;
 
-// TODO: next, refactor this shit AGAIN
-// EITHER figure out of there is a way to pass JUST a queryKey
-// OR accept that search is different from other list things, and figure out
-//    a good pattern for what is shared between search and other infinite queries
-
 function Search() {
+  const [inputVal, setInputVal] = useState("");
   const [text, setText] = useState("");
 
   const queryOptions: PostListProps = {
@@ -45,9 +41,15 @@ function Search() {
     fetchStatus,
   } = useGetPostsPaginated(queryOptions);
 
+  useEffect(() => {
+    if (text.length > 0) {
+      refetch();
+    }
+  }, [text, refetch]);
+
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
-    refetch();
+    setText(inputVal);
   }
 
   const showGetMorePostsButton =
@@ -58,7 +60,11 @@ function Search() {
 
   return (
     <>
-      <SearchInput text={text} setText={setText} handleSearch={handleSearch} />
+      <SearchInput
+        text={inputVal}
+        setText={setInputVal}
+        handleSearch={handleSearch}
+      />
       <LoadingAndErrorWrapper
         isFetching={isFetching}
         isError={isError}
