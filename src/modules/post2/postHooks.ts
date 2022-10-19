@@ -1,6 +1,59 @@
 import { useSession } from "next-auth/react";
+import { PostGetPaginated } from "../../server/trpc/router/post";
 import { trpc } from "../../utils/trpc";
 import { PostListProps } from "./PostsInfinite";
+
+type CreatePostArgs = {
+  userId: string;
+};
+
+export function useCreatePost({ userId }: CreatePostArgs) {
+  const { data: session } = useSession();
+  const queryClient = trpc.useContext();
+
+  return trpc.post.create.useMutation({
+    onMutate: (post) => {
+      queryClient.post.getPaginated.cancel();
+      const oldData = queryClient.post.getPaginated.getInfiniteData({
+        userId,
+      });
+      if (oldData) {
+        const date = new Date();
+        // leaving here for tutorial sake but would usually delete the type
+        // after building the object
+        const newPost: PostGetPaginated["output"]["posts"][number] = {
+          id: JSON.stringify(date),
+          text: post.text,
+          createdAt: date,
+          updatedAt: date,
+          authorId: session?.user?.id || "",
+          likedBy: [],
+          author: {
+            name: session?.user?.name || "unknown username",
+            image: session?.user?.image || "",
+          },
+          _count: {
+            likedBy: 0,
+          },
+        };
+
+        if (oldData.pages[0]) {
+          oldData.pages[0].posts.unshift(newPost);
+        }
+
+        queryClient.post.getPaginated.setInfiniteData(oldData, {
+          userId,
+        });
+      }
+      return oldData;
+    },
+    onError: (e, _input, oldData) => {
+      queryClient.post.getPaginated.setInfiniteData(oldData);
+      console.error(e);
+    },
+    onSettled: () => queryClient.post.getPaginated.invalidate(),
+  });
+}
 
 type UseGetPostByIdArgs = {
   postId: string;
