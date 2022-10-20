@@ -1,5 +1,7 @@
 import { GetServerSideProps } from "next";
-import { getProviders, getSession, signIn } from "next-auth/react";
+import { unstable_getServerSession } from "next-auth";
+import { getProviders, signIn } from "next-auth/react";
+import { authOptions } from "./api/auth/[...nextauth]";
 
 function SignIn(props: {
   providers: Awaited<ReturnType<typeof getProviders>>;
@@ -27,7 +29,12 @@ function SignIn(props: {
 export default SignIn;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session = await getSession(context);
+  const session = await unstable_getServerSession(
+    context.req,
+    context.res,
+    authOptions,
+  );
+
   if (session) {
     return {
       redirect: {
