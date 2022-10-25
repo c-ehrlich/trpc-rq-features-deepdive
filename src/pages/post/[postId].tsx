@@ -1,10 +1,10 @@
 import superjson from "superjson";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
-import { createProxySSGHelpers } from "@trpc/react/ssg";
+import { createProxySSGHelpers } from "@trpc/react-query/ssg";
 import { createContextInner } from "../../server/trpc/context";
 import { appRouter } from "../../server/trpc/router/_app";
 import Link from "next/link";
-import Image from "next/future/image";
+import Image from "next/image";
 import { useSession } from "next-auth/react";
 import defaultAvatar from "../../modules/user/default-avatar.jpeg";
 import clsx from "clsx";
@@ -46,18 +46,16 @@ export default function PostPage(
     <div className="mt-8 flex flex-col gap-3 bg-slate-900 p-8 text-white">
       <div className="flex gap-4">
         <Link href={`/user/${post.authorId}`}>
-          <a>
-            <Image
-              className="rounded-full"
-              src={post.author.image || defaultAvatar}
-              alt={`${post.author.name}'s Avatar`}
-              width={80}
-              height={80}
-            />
-          </a>
+          <Image
+            className="rounded-full"
+            src={post.author.image || defaultAvatar}
+            alt={`${post.author.name}'s Avatar`}
+            width={80}
+            height={80}
+          />
         </Link>
-        <Link href={`/user/${post.authorId}`}>
-          <a className="text-2xl font-bold">{post.author.name}</a>
+        <Link className="text-2xl font-bold" href={`/user/${post.authorId}`}>
+          {post.author.name}
         </Link>{" "}
       </div>
       <div className="flex flex-col gap-2">

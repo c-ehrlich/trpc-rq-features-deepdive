@@ -7,18 +7,12 @@ function Header() {
   return (
     <div className="sticky top-0 mb-4 flex w-screen items-center justify-between border-b-2 border-b-slate-500 bg-slate-900 p-4 text-white">
       <Link href="/">
-        <a>
-          <h1 className="text-2xl text-white">Fake Twitter</h1>
-        </a>
+        <h1 className="text-2xl text-white">Fake Twitter</h1>
       </Link>
       {session?.user && (
         <>
-          <Link href="/likes">
-            <a>Likes</a>
-          </Link>
-          <Link href="/search">
-            <a>Search</a>
-          </Link>
+          <Link href="/likes">Likes</Link>
+          <Link href="/search">Search</Link>
         </>
       )}
       <div>

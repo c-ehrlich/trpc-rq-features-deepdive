@@ -1,5 +1,5 @@
 import { useSession } from "next-auth/react";
-import Image from "next/future/image";
+import Image from "next/image";
 import ErrorDisplay from "../../components/ErrorDisplay";
 import LoadingDisplay from "../../components/LoadingDisplay";
 import CreatePost from "../post2/CreatePost";
