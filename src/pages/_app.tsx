@@ -32,7 +32,7 @@ function AppLayout(props: { children: ReactNode }) {
   return (
     <div className="flex min-h-screen w-screen flex-col items-center bg-slate-800">
       {!fullscreen && <Header />}
-      <main className="container flex h-full w-screen flex-1 flex-col gap-2">
+      <main className="container flex h-full w-screen flex-1 flex-col gap-2 p-4">
         {props.children}
       </main>
     </div>

@@ -43,7 +43,7 @@ export default function PostPage(
   }
 
   return (
-    <div className="mt-8 flex flex-col gap-3 bg-slate-900 p-8 text-white">
+    <div className="flex flex-col gap-3 bg-slate-900 p-8 text-white">
       <div className="flex gap-4">
         <Link href={`/user/${post.authorId}`}>
           <Image
@@ -72,10 +72,8 @@ export default function PostPage(
           </div>
         )}
       </div>
-      <Link href={`/post/${post.id}`}>
-        <a className="text-sm text-slate-400">
-          {post.createdAt.toLocaleString()}
-        </a>
+      <Link className="text-sm text-slate-400" href={`/post/${post.id}`}>
+        {post.createdAt.toLocaleString()}
       </Link>
     </div>
   );

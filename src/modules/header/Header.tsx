@@ -5,7 +5,7 @@ function Header() {
   const { data: session } = useSession();
 
   return (
-    <div className="sticky top-0 mb-4 flex w-screen items-center justify-between border-b-2 border-b-slate-500 bg-slate-900 p-4 text-white">
+    <div className="sticky top-0 flex w-screen items-center justify-between border-b-2 border-b-slate-500 bg-slate-900 p-4 text-white">
       <Link href="/">
         <h1 className="text-2xl text-white">Fake Twitter</h1>
       </Link>

@@ -4,7 +4,7 @@ type ErrorDisplayProps = {
 
 function ErrorDisplay(props: ErrorDisplayProps) {
   return (
-    <div className="mt-12 w-full text-center text-2xl text-white">
+    <div className="w-full text-center text-2xl text-white">
       Error: {props.error}
     </div>
   );

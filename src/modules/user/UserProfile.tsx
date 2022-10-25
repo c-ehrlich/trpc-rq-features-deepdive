@@ -54,7 +54,7 @@ function UserProfile(props: UserProfileProps) {
 
   return (
     <>
-      <div className="mt-4 flex gap-4 bg-slate-900 p-4">
+      <div className="flex gap-4 bg-slate-900 p-4">
         <Image
           className="h-32 w-32 rounded-full"
           alt={`${user.name}'s avatar`}

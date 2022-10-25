@@ -4,7 +4,7 @@ type LoadingDisplayProps = {
 
 function LoadingDisplay(props: LoadingDisplayProps) {
   return (
-    <div className="mt-12 w-full text-center text-2xl text-white">
+    <div className="w-full text-center text-2xl text-white">
       Loading{props.thing && ` ${props.thing}`}...
     </div>
   );
