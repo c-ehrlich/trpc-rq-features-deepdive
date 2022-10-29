@@ -2,6 +2,7 @@
 import type { inferAsyncReturnType } from "@trpc/server";
 import type { CreateNextContextOptions } from "@trpc/server/adapters/next";
 import { Session } from "next-auth";
+
 import { getServerAuthSession } from "../common/get-server-auth-session";
 import { prisma } from "../db/client";
 
@@ -13,9 +14,9 @@ type CreateContextOptions = {
  * - testing, so we dont have to mock Next.js' req/res
  * - trpc's `createSSGHelpers` where we don't have req/res
  **/
-export const createContextInner = async (opts?: CreateContextOptions) => {
+export const createContextInner = async (opts: CreateContextOptions) => {
   return {
-    session: opts?.session,
+    session: opts.session,
     prisma,
   };
 };

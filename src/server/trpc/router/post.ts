@@ -1,8 +1,8 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { AppRouterTypes } from "./_app";
 import { constants } from "../../../utils/constants";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
+import { RouterTypes } from "../../../utils/trpc";
 
 export const postRouter = router({
   create: protectedProcedure
@@ -197,4 +197,4 @@ export const postRouter = router({
     }),
 });
 
-export type PostGetPaginated = AppRouterTypes["post"]["getPaginated"];
+export type PostGetPaginated = RouterTypes["post"]["getPaginated"];
