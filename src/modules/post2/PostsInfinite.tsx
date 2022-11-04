@@ -1,4 +1,4 @@
-import { PostGetPaginated } from "../../server/trpc/router/post";
+import { PostGetPaginatedOutput } from "../../server/trpc/router/post";
 import useGetPostsPaginated from "./hooks/useGetPostsPaginated";
 import useLikePostPaginated from "./hooks/useLikePostPaginated";
 import defaultAvatar from "../user/default-avatar.jpeg";
@@ -79,7 +79,7 @@ export function PostInifiniteListGroup(props: { children: ReactNode }) {
 }
 
 export function PostInList(props: {
-  post: PostGetPaginated["output"]["posts"][number];
+  post: PostGetPaginatedOutput["posts"][number];
   queryOptions: PostListProps;
 }) {
   const { data: session } = useSession();

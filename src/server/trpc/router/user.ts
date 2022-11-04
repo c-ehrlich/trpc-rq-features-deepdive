@@ -1,7 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import { RouterTypes } from "../../../utils/trpc";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
 
 export const userRouter = router({
@@ -79,5 +78,3 @@ export const userRouter = router({
       return true;
     }),
 });
-
-export type UserFindById = RouterTypes["user"]["findById"];

@@ -1,5 +1,5 @@
 import { useSession } from "next-auth/react";
-import { PostGetPaginated } from "../../../server/trpc/router/post";
+import { PostGetPaginatedOutput } from "../../../server/trpc/router/post";
 import { trpc } from "../../../utils/trpc";
 
 type CreatePostArgs = {
@@ -20,7 +20,7 @@ function useCreatePost({ userId }: CreatePostArgs) {
         const date = new Date();
         // leaving here for tutorial sake but would usually delete the type
         // after building the object
-        const newPost: PostGetPaginated["output"]["posts"][number] = {
+        const newPost: PostGetPaginatedOutput["posts"][number] = {
           id: String(date),
           text: post.text,
           createdAt: date,
