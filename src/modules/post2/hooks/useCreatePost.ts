@@ -11,8 +11,8 @@ function useCreatePost({ userId }: CreatePostArgs) {
   const utils = trpc.useContext();
 
   return trpc.post.create.useMutation({
-    onMutate: (post) => {
-      utils.post.getPaginated.cancel();
+    onMutate: async (post) => {
+      await utils.post.getPaginated.cancel();
       const oldData = utils.post.getPaginated.getInfiniteData({
         userId,
       });
@@ -21,7 +21,7 @@ function useCreatePost({ userId }: CreatePostArgs) {
         // leaving here for tutorial sake but would usually delete the type
         // after building the object
         const newPost: PostGetPaginated["output"]["posts"][number] = {
-          id: JSON.stringify(date),
+          id: String(date),
           text: post.text,
           createdAt: date,
           updatedAt: date,
@@ -50,7 +50,9 @@ function useCreatePost({ userId }: CreatePostArgs) {
       utils.post.getPaginated.setInfiniteData(oldData);
       console.error(e);
     },
-    onSettled: () => utils.post.getPaginated.invalidate(),
+    onSettled: () => {
+      utils.post.getPaginated.refetch();
+    },
   });
 }
 
