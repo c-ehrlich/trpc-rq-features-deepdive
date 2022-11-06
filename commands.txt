@@ -1,0 +1,1 @@
+npx create-t3-app@6.0.0-beta.779bd56
